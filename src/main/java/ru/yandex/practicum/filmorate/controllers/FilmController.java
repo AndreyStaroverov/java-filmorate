@@ -31,7 +31,7 @@ public class FilmController {
     public Film update(@Valid @RequestBody Film film, BindingResult bindingResult) {
 
         if (!films.containsKey(film.getId())) {
-            throw new filmAlreadyExistException("Not found");
+            throw new FilmAlreadyExistException("Not found");
         }
 
         if (!bindingResult.hasErrors()) {
@@ -39,7 +39,7 @@ public class FilmController {
             log.debug("Фильм обновлен" + film);
         } else {
             log.debug("ValidationException in PUT/films");
-            throw new ValidationException("Error in Validation film");
+            throw new ValidationException("Ошибка валидации при запросе PUT, для /films");
         }
         return film;
     }
@@ -53,7 +53,7 @@ public class FilmController {
             return film;
         } else {
             log.debug("ValidationException in POST/films");
-            throw new ValidationException("Error in Validation film");
+            throw new ValidationException("Ошибка валидации при запросе POST, для /users");
         }
     }
 }

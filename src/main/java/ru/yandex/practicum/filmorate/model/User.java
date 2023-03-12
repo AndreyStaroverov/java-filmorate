@@ -15,11 +15,10 @@ import java.time.LocalDate;
 import java.util.Date;
 
 @Data
-@NoArgsConstructor
+//@NoArgsConstructor
 @AllArgsConstructor
 public class User {
 
-    @NonNull
     @Setter
     private  int id;
     @Email
@@ -30,7 +29,9 @@ public class User {
     @NonNull
     private  String login;
     private  String name;
-    @NonNull @Past @DateTimeFormat(iso = DateTimeFormat.ISO.DATE )
+    @NonNull
+    @Past
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE )
     private LocalDate birthday;
 }
 

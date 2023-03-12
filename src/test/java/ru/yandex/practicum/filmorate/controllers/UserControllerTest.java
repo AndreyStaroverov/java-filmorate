@@ -45,7 +45,7 @@ class UserControllerTest {
     @SneakyThrows
     @Test
     void whenNullValueUser_EmptyModel_PostReturn400() {
-        User incorrectUser = new User();
+        User incorrectUser = new User(0, "", "", "", LocalDate.of(1,1,1));
         MockHttpServletResponse response = mockMvc.perform(post("/users")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(incorrectUser)))

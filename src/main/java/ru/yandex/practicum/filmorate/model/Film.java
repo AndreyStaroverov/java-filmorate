@@ -12,19 +12,20 @@ import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Data
-@NoArgsConstructor
+//@NoArgsConstructor
 @AllArgsConstructor
 public class Film {
 
-    @NonNull
     @Setter
     private int id;
     @NotBlank
     private String name;
     @Size(max = 200)
     private String description;
-    @NonNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE ) @FilmDateApprove
+    @NonNull
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE )
+    @FilmDateApprove
     private LocalDate releaseDate;
-    @Positive @NonNull
-    private Integer duration;
+    @Positive
+    private int duration;
 }

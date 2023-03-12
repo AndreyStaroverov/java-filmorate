@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.controllers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exceptions.InvalidEmailExceptions;
+import ru.yandex.practicum.filmorate.exceptions.InvalidEmailException;
 import ru.yandex.practicum.filmorate.exceptions.UserAlreadyExistException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -28,39 +28,34 @@ public class UserController {
     }
 
     @PostMapping(value = "/users")
-    public User create(@Valid @RequestBody  User user, BindingResult bindingResult) {
-
-        user = userValid(user);
-
+    public User create(@Valid @RequestBody User user, BindingResult bindingResult) {
+        user = validateUser(user);
         if (!bindingResult.hasErrors()) {
             user.setId(id++);
             users.put(user.getId(), user);
             log.debug("Добавили id:" + user.getId());
         } else {
-            throw new ValidationException("UserPost");
+            throw new ValidationException("Ошибка валидации при запросе POST, для /users");
         }
         return user;
     }
 
-    @PutMapping( value = "/users")
-    public User put(@Valid @RequestBody User user , BindingResult bindingResult) {
-
-        user = userValid(user);
-
+    @PutMapping(value = "/users")
+    public User put(@Valid @RequestBody User user, BindingResult bindingResult) {
+        user = validateUser(user);
         if (!bindingResult.hasErrors()) {
-        users.remove(user.getId());
-        users.put(user.getId(), user);
-        log.debug("Обновили user id:" + user.getId());
-    } else {
-        throw new ValidationException("UserPost");
-    }
+            users.remove(user.getId());
+            users.put(user.getId(), user);
+            log.debug("Обновили user id:" + user.getId());
+        } else {
+            throw new ValidationException("Ошибка валидации при запросе PuT, для /users");
+        }
         return user;
     }
 
-    public User userValid(User user) {
-
-        for (Integer i: users.keySet()) {
-            if (users.get(i).getEmail().equals(user.getEmail())) {
+    public User validateUser(User user) {
+        for (User u : users.values()) {
+            if (u.getEmail().equals(user.getEmail())) {
                 throw new UserAlreadyExistException("Пользователь с электронной почтой " +
                         user.getEmail() + " уже зарегистрирован.");
             }
@@ -71,7 +66,7 @@ public class UserController {
         }
         if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             log.debug("InvalidEmailException in PUT/users");
-            throw new InvalidEmailExceptions("Адрес электронной почты не может быть пустым.");
+            throw new InvalidEmailException("Адрес электронной почты не может быть пустым.");
         }
         return user;
     }

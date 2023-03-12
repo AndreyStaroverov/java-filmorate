@@ -47,7 +47,7 @@ class FilmControllerTest {
     @SneakyThrows
     @Test
     void whenCreateEmptyModel_Status400() {
-        Film film = new Film();
+        Film film = new Film(0, "", "", LocalDate.of(11,1,1), 1);
 
         MockHttpServletResponse response = mockMvc.perform(post("/films")
                         .contentType("application/json")
