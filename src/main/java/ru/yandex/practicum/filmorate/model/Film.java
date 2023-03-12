@@ -12,7 +12,6 @@ import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Data
-//@NoArgsConstructor
 @AllArgsConstructor
 public class Film {
 
