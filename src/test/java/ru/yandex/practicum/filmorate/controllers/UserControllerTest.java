@@ -179,11 +179,11 @@ class UserControllerTest {
         MockHttpServletResponse responseTwo = mockMvc.perform(post("/users")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(incorrectUser)))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isNotFound())
                 .andReturn()
                 .getResponse();
 
-        assertEquals(400, responseTwo.getStatus());
+        assertEquals(404, responseTwo.getStatus());
     }
 
     }
