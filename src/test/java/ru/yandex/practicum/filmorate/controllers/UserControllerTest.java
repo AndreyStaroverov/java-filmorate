@@ -70,7 +70,7 @@ class UserControllerTest {
                 .getResponse();
 
 
-        assertEquals(400, responseTwo.getStatus());
+        assertEquals(404, responseTwo.getStatus());
     }
 
     @SneakyThrows
@@ -197,7 +197,7 @@ class UserControllerTest {
                 .andReturn()
                 .getResponse();
 
-        User incorrectUser = new User(2, "mailTest@yandex.ru", "MichailUpdate", "nameSecond",
+        User incorrectUser = new User(1, "mailTest@yandex.ru", "MichailUpdate", "nameSecond",
                 LocalDate.of(2002, 10, 5));
         MockHttpServletResponse responseTwo = mockMvc.perform(put("/users")
                         .contentType("application/json")
