@@ -37,11 +37,11 @@ public class FilmController {
         if (!bindingResult.hasErrors()) {
             films.put(film.getId(), film);
             log.debug("Фильм обновлен" + film);
-        } else {
-            log.debug("ValidationException in PUT/films");
-            throw new ValidationException("Ошибка валидации при запросе PUT, для /films");
+            return film;
         }
-        return film;
+        log.debug("ValidationException in PUT/films");
+        throw new ValidationException("Ошибка валидации при запросе PUT, для /films");
+
     }
 
     @PostMapping(value = "/films")
@@ -51,9 +51,9 @@ public class FilmController {
             films.put(film.getId(), film);
             log.debug("Фильм создан и добавлен: " + film);
             return film;
-        } else {
-            log.debug("ValidationException in POST/films");
-            throw new ValidationException("Ошибка валидации при запросе POST, для /users");
         }
+        log.debug("ValidationException in POST/films");
+        throw new ValidationException("Ошибка валидации при запросе POST, для /users");
+
     }
 }

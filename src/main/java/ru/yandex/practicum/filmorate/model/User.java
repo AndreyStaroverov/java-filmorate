@@ -20,10 +20,8 @@ public class User {
     private  int id;
     @Email
     @NotBlank
-    @NonNull
     private  String email;
     @NotBlank
-    @NonNull
     private  String login;
     private  String name;
     @NonNull

@@ -29,37 +29,38 @@ public class UserController {
 
     @PostMapping(value = "/users")
     public User create(@Valid @RequestBody User user, BindingResult bindingResult) {
+        for (User storedUser : users.values()) {
+            if (storedUser.getEmail().equals(user.getEmail())) {
+                throw new UserAlreadyExistException("Пользователь с электронной почтой " +
+                        user.getEmail() + " уже зарегистрирован.");
+            }
+        }
         user = validateUser(user);
         if (!bindingResult.hasErrors()) {
             user.setId(id++);
             users.put(user.getId(), user);
             log.debug("Добавили id:" + user.getId());
-        } else {
-            throw new ValidationException("Ошибка валидации при запросе POST, для /users");
+            return user;
         }
-        return user;
+        throw new ValidationException("Ошибка валидации при запросе POST, для /users");
     }
 
     @PutMapping(value = "/users")
     public User put(@Valid @RequestBody User user, BindingResult bindingResult) {
+        if (!users.containsKey(user.getId())) {
+            throw new UserAlreadyExistException("Пользователя не существует, добавтье нового пользователя");
+        }
         user = validateUser(user);
         if (!bindingResult.hasErrors()) {
             users.remove(user.getId());
             users.put(user.getId(), user);
             log.debug("Обновили user id:" + user.getId());
-        } else {
-            throw new ValidationException("Ошибка валидации при запросе PuT, для /users");
+            return user;
         }
-        return user;
+        throw new ValidationException("Ошибка валидации при запросе PuT, для /users");
     }
 
     public User validateUser(User user) {
-        for (User u : users.values()) {
-            if (u.getEmail().equals(user.getEmail())) {
-                throw new UserAlreadyExistException("Пользователь с электронной почтой " +
-                        user.getEmail() + " уже зарегистрирован.");
-            }
-        }
         if (user.getName() == null || user.getName().isBlank()) {
             user = new User(user.getId(), user.getEmail(), user.getLogin(), user.getLogin(), user.getBirthday());
             log.debug("Заменили пустое имя на login");

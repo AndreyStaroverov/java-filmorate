@@ -164,7 +164,6 @@ class UserControllerTest {
     @SneakyThrows
     @Test
     void whenTryCreateEmailAlreadyRegistred() {
-        ;
         User User = new User(1, "mailTest@yandex.ru", "Michail", "name",
                 LocalDate.of(2002, 10, 5));
         MockHttpServletResponse response = mockMvc.perform(post("/users")
@@ -184,6 +183,30 @@ class UserControllerTest {
                 .getResponse();
 
         assertEquals(404, responseTwo.getStatus());
+    }
+
+    @SneakyThrows
+    @Test
+    void whenUpdateUserAlredyRigistredEmail(){
+        User User = new User(1, "mailTest@yandex.ru", "Michail", "name",
+                LocalDate.of(2002, 10, 5));
+        MockHttpServletResponse response = mockMvc.perform(post("/users")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(User)))
+                .andExpect(status().is2xxSuccessful())
+                .andReturn()
+                .getResponse();
+
+        User incorrectUser = new User(2, "mailTest@yandex.ru", "MichailUpdate", "nameSecond",
+                LocalDate.of(2002, 10, 5));
+        MockHttpServletResponse responseTwo = mockMvc.perform(put("/users")
+                        .contentType("application/json")
+                        .content(objectMapper.writeValueAsString(incorrectUser)))
+                .andExpect(status().is2xxSuccessful())
+                .andReturn()
+                .getResponse();
+
+        assertEquals(200, responseTwo.getStatus());
     }
 
     }
