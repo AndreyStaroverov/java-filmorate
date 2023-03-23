@@ -47,7 +47,6 @@ public class InMemoryUserStorage implements UserStorage {
         for (Long user : users.get(id).getFriends()) {
             userFriends.add(users.get(user));
         }
-
         return userFriends;
     }
 
