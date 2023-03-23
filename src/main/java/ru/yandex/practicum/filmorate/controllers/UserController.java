@@ -1,68 +1,132 @@
 package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.InvalidEmailException;
 import ru.yandex.practicum.filmorate.exceptions.UserAlreadyExistException;
+import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @Slf4j
 public class UserController {
-    private final Map<Integer, User> users = new HashMap<>();
-    private int id = 1;
+
+    private UserService userService;
+
+    @Autowired
+    public void setService(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/users")
     public List<User> findAll() {
-        log.debug("Текущее количество users: {}", users.size());
-        return List.copyOf(users.values());
+        log.debug("Попытка получить список пользователей...");
+        return userService.findAll();
+    }
+
+    @GetMapping("/users/{id}")
+    public User getUserById(@PathVariable("id") long id) {
+        if (userService.getUserById(id) == null) {
+            throw new UserNotFoundException("Пользователя не существует, добавтье нового пользователя");
+        }
+        log.debug("Попытка получить пользователя по идентификатору");
+        return userService.getUserById(id);
+    }
+
+    @GetMapping("/users/{id}/friends")
+    public List<User> getUserFriends(@PathVariable("id") long id) {
+        if (userService.getUserById(id) == null) {
+            throw new UserNotFoundException("Пользователя не существует, добавтье нового пользователя");
+        }
+        if (id < 0) {
+            throw new ValidationException("Bad id");
+        }
+        log.debug("Попытка получить друзей пользователя");
+        return userService.getFriendsById(id);
+    }
+
+    @GetMapping("/users/{id}/friends/common/{otherId}")
+    public List<User> getCommonUserFriends(@PathVariable("id") long id, @PathVariable("otherId") long otherId) {
+        log.debug("Попытка получить друзей пользователя");
+        if (userService.getUserById(id) == null) {
+            throw new UserNotFoundException("Пользователя id не существует, добавтье нового пользователя");
+        }
+        if (userService.getUserById(otherId) == null) {
+            throw new UserNotFoundException("Пользователя other не существует, добавтье нового пользователя");
+        }
+        if (id < 0 || otherId < 0) {
+            throw new ValidationException("Bad id");
+        }
+        return userService.getClosedFriends(id, otherId);
     }
 
     @PostMapping(value = "/users")
     public User create(@Valid @RequestBody User user, BindingResult bindingResult) {
-        for (User storedUser : users.values()) {
+        for (User storedUser : userService.findAll()) {
             if (storedUser.getEmail().equals(user.getEmail())) {
                 throw new UserAlreadyExistException("Пользователь с электронной почтой " +
                         user.getEmail() + " уже зарегистрирован.");
             }
         }
         user = validateUser(user);
-        if (!bindingResult.hasErrors()) {
-            user.setId(id++);
-            users.put(user.getId(), user);
-            log.debug("Добавили id:" + user.getId());
-            return user;
+        if (bindingResult.hasErrors()) {
+            throw new ValidationException("Ошибка валидации при запросе POST, для /users");
         }
-        throw new ValidationException("Ошибка валидации при запросе POST, для /users");
+        return userService.createUser(user);
     }
 
     @PutMapping(value = "/users")
     public User put(@Valid @RequestBody User user, BindingResult bindingResult) {
-        if (!users.containsKey(user.getId())) {
-            throw new UserAlreadyExistException("Пользователя не существует, добавтье нового пользователя");
+        if (userService.getUserById(user.getId()) == null) {
+            throw new UserNotFoundException("Пользователя не существует, добавтье нового пользователя");
         }
         user = validateUser(user);
-        if (!bindingResult.hasErrors()) {
-            users.remove(user.getId());
-            users.put(user.getId(), user);
-            log.debug("Обновили user id:" + user.getId());
-            return user;
+        if (bindingResult.hasErrors()) {
+            throw new ValidationException("Ошибка валидации при запросе PuT, для /users");
         }
-        throw new ValidationException("Ошибка валидации при запросе PuT, для /users");
+        return userService.updateUser(user);
+    }
+
+    @PutMapping(value = "/users/{id}/friends/{friendId}")
+    public User addFriends(@PathVariable("id") long id, @PathVariable("friendId") long friendId) {
+        log.debug("Попытка добавить пользователя в друзья");
+        if (userService.getUserById(id) == null) {
+            throw new UserNotFoundException("Пользователя id  не существует, добавтье нового пользователя");
+        }
+        if (userService.getUserById(friendId) == null) {
+            throw new UserNotFoundException("Пользователя friend не существует, добавтье нового пользователя");
+        }
+        if (id < 0 || friendId < 0) {
+            throw new UserNotFoundException("Bad id");
+        }
+        return userService.addFriends(id, friendId);
+    }
+
+    @DeleteMapping(value = "/users/{id}/friends/{friendId}")
+    public User deleteFriends(@PathVariable("id") long id, @PathVariable("friendId") long friendId) {
+        log.debug("Попытка удалить из друзей");
+        if (userService.getUserById(id) == null) {
+            throw new UserNotFoundException("Пользователя id не существует, добавтье нового пользователя");
+        }
+        if (userService.getUserById(friendId) == null) {
+            throw new UserNotFoundException("Пользователя friend не существует, добавтье нового пользователя");
+        }
+        if (id < 0 || friendId < 0) {
+            throw new UserNotFoundException("Bad id");
+        }
+        return userService.deleteFriends(id, friendId);
     }
 
     public User validateUser(User user) {
         if (user.getName() == null || user.getName().isBlank()) {
-            user = new User(user.getId(), user.getEmail(), user.getLogin(), user.getLogin(), user.getBirthday());
+            user.setName(user.getLogin());
             log.debug("Заменили пустое имя на login");
         }
         if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
