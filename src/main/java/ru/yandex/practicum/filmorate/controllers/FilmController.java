@@ -34,10 +34,6 @@ public class FilmController {
     @GetMapping("/films/{id}")
     public Film filmsAll(@PathVariable("id") Long id) {
         log.debug("Попытка получить фильм по идентификатору");
-        if (filmService.getFilmById(id) == null) {
-            log.debug("ValidationException in PUT/films");
-            throw new FilmNotFoundException("Not found");
-        }
         return filmService.getFilmById(id);
     }
 
@@ -58,10 +54,6 @@ public class FilmController {
 
     @PutMapping(value = "/films")
     public Film update(@Valid @RequestBody Film film, BindingResult bindingResult) {
-        if (filmService.getFilmById(film.getId()) == null) {
-            log.debug("ValidationException in PUT/films");
-            throw new FilmNotFoundException("Not found");
-        }
         if (bindingResult.hasErrors()) {
             log.debug("ValidationException in PUT/films");
             throw new ValidationException("Ошибка валидации при запросе PUT, для /films");
@@ -72,28 +64,12 @@ public class FilmController {
     @PutMapping(value = "/films/{id}/like/{userId}")
     public Film addLike(@PathVariable("id") long id, @PathVariable("userId") long userId) {
         log.debug("Попытка поставить лайк фильму");
-        if (filmService.getFilmById(id) == null) {
-            log.debug("ValidationException in PUT/films");
-            throw new FilmNotFoundException("Not found");
-        }
-        if (userId < 1) {
-            log.debug("ValidationException in PUT/films");
-            throw new UserNotFoundException("userId is bad");
-        }
         return filmService.addLike(id, userId);
     }
 
     @DeleteMapping(value = "/films/{id}/like/{userId}")
     public Film deleteLike(@PathVariable("id") long id, @PathVariable("userId") long userId) {
         log.debug("Попытка удалить лайк у фильма");
-        if (filmService.getFilmById(id) == null) {
-            log.debug("ValidationException in PUT/films");
-            throw new FilmNotFoundException("Not found");
-        }
-        if (userId < 1) {
-            log.debug("ValidationException in PUT/films");
-            throw new UserNotFoundException("userId is bad");
-        }
         return filmService.deleteLike(id, userId);
     }
 }

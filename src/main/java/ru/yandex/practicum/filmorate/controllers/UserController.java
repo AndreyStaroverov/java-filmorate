@@ -34,21 +34,12 @@ public class UserController {
 
     @GetMapping("/users/{id}")
     public User getUserById(@PathVariable("id") long id) {
-        if (userService.getUserById(id) == null) {
-            throw new UserNotFoundException("Пользователя не существует, добавтье нового пользователя");
-        }
         log.debug("Попытка получить пользователя по идентификатору");
         return userService.getUserById(id);
     }
 
     @GetMapping("/users/{id}/friends")
     public Collection<User> getUserFriends(@PathVariable("id") long id) {
-        if (userService.getUserById(id) == null) {
-            throw new UserNotFoundException("Пользователя не существует, добавтье нового пользователя");
-        }
-        if (id < 0) {
-            throw new ValidationException("Bad id");
-        }
         log.debug("Попытка получить друзей пользователя");
         return userService.getFriendsById(id);
     }
@@ -56,26 +47,11 @@ public class UserController {
     @GetMapping("/users/{id}/friends/common/{otherId}")
     public Collection<User> getCommonUserFriends(@PathVariable("id") long id, @PathVariable("otherId") long otherId) {
         log.debug("Попытка получить друзей пользователя");
-        if (userService.getUserById(id) == null) {
-            throw new UserNotFoundException("Пользователя id не существует, добавтье нового пользователя");
-        }
-        if (userService.getUserById(otherId) == null) {
-            throw new UserNotFoundException("Пользователя other не существует, добавтье нового пользователя");
-        }
-        if (id < 0 || otherId < 0) {
-            throw new ValidationException("Bad id");
-        }
         return userService.getClosedFriends(id, otherId);
     }
 
     @PostMapping(value = "/users")
     public User create(@Valid @RequestBody User user, BindingResult bindingResult) {
-        for (User storedUser : userService.findAll()) {
-            if (storedUser.getEmail().equals(user.getEmail())) {
-                throw new UserAlreadyExistException("Пользователь с электронной почтой " +
-                        user.getEmail() + " уже зарегистрирован.");
-            }
-        }
         user = validateUser(user);
         if (bindingResult.hasErrors()) {
             throw new ValidationException("Ошибка валидации при запросе POST, для /users");
@@ -85,9 +61,6 @@ public class UserController {
 
     @PutMapping(value = "/users")
     public User put(@Valid @RequestBody User user, BindingResult bindingResult) {
-        if (userService.getUserById(user.getId()) == null) {
-            throw new UserNotFoundException("Пользователя не существует, добавтье нового пользователя");
-        }
         user = validateUser(user);
         if (bindingResult.hasErrors()) {
             throw new ValidationException("Ошибка валидации при запросе PuT, для /users");
@@ -98,30 +71,12 @@ public class UserController {
     @PutMapping(value = "/users/{id}/friends/{friendId}")
     public User addFriends(@PathVariable("id") long id, @PathVariable("friendId") long friendId) {
         log.debug("Попытка добавить пользователя в друзья");
-        if (userService.getUserById(id) == null) {
-            throw new UserNotFoundException("Пользователя id  не существует, добавтье нового пользователя");
-        }
-        if (userService.getUserById(friendId) == null) {
-            throw new UserNotFoundException("Пользователя friend не существует, добавтье нового пользователя");
-        }
-        if (id < 0 || friendId < 0) {
-            throw new UserNotFoundException("Bad id");
-        }
         return userService.addFriends(id, friendId);
     }
 
     @DeleteMapping(value = "/users/{id}/friends/{friendId}")
     public User deleteFriends(@PathVariable("id") long id, @PathVariable("friendId") long friendId) {
         log.debug("Попытка удалить из друзей");
-        if (userService.getUserById(id) == null) {
-            throw new UserNotFoundException("Пользователя id не существует, добавтье нового пользователя");
-        }
-        if (userService.getUserById(friendId) == null) {
-            throw new UserNotFoundException("Пользователя friend не существует, добавтье нового пользователя");
-        }
-        if (id < 0 || friendId < 0) {
-            throw new UserNotFoundException("Bad id");
-        }
         return userService.deleteFriends(id, friendId);
     }
 

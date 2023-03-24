@@ -82,7 +82,7 @@ class UserControllerTest {
                 .getResponse();
 
 
-        assertEquals(404, responseTwo.getStatus());
+        assertEquals(400, responseTwo.getStatus());
     }
 
     @SneakyThrows

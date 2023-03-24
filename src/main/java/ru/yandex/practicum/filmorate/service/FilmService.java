@@ -1,7 +1,10 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
@@ -10,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class FilmService {
 
 
@@ -21,11 +25,27 @@ public class FilmService {
 
 
     public Film addLike(Long filmId, Long userId) {
+        if (filmStorage.getFilmById(filmId) == null) {
+            log.debug("ValidationException in PUT/films");
+            throw new FilmNotFoundException("Not found");
+        }
+        if (userId < 1) {
+            log.debug("ValidationException in PUT/films");
+            throw new UserNotFoundException("userId is bad");
+        }
         filmStorage.getFilmById(filmId).getLikes().add(userId);
         return filmStorage.getFilmById(filmId);
     }
 
     public Film deleteLike(Long filmId, Long userId) {
+        if (filmStorage.getFilmById(filmId) == null) {
+            log.debug("ValidationException in PUT/films");
+            throw new FilmNotFoundException("Not found");
+        }
+        if (userId < 1) {
+            log.debug("ValidationException in PUT/films");
+            throw new UserNotFoundException("userId is bad");
+        }
         filmStorage.getFilmById(filmId).getLikes().remove(userId);
         return filmStorage.getFilmById(filmId);
     }
@@ -45,6 +65,10 @@ public class FilmService {
     }
 
     public Film getFilmById(Long id) {
+        if (filmStorage.getFilmById(id) == null) {
+            log.debug("ValidationException in PUT/films");
+            throw new FilmNotFoundException("Not found");
+        }
         return filmStorage.getFilmById(id);
     }
 
@@ -53,6 +77,10 @@ public class FilmService {
     }
 
     public Film updateFilm(Film film) {
+        if (filmStorage.getFilmById(film.getId()) == null) {
+            log.debug("ValidationException in PUT/films");
+            throw new FilmNotFoundException("Not found");
+        }
         return filmStorage.updateFilm(film);
     }
 }
