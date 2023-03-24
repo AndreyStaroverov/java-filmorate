@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,12 +13,12 @@ import java.util.stream.Collectors;
 public class FilmService {
 
 
-    private FilmStorage filmStorage;
+    private final FilmStorage filmStorage;
 
-    @Autowired
-    public void setFilmStorage(FilmStorage filmStorage) {
+    public FilmService(@Autowired FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
+
 
     public Film addLike(Long filmId, Long userId) {
         filmStorage.getFilmById(filmId).getLikes().add(userId);
@@ -29,7 +30,7 @@ public class FilmService {
         return filmStorage.getFilmById(filmId);
     }
 
-    public List<Film> getRateFilms(int count) {
+    public Collection<Film> getRateFilms(int count) {
         if (filmStorage.getFilms().isEmpty()) {
             return List.copyOf(filmStorage.getFilms());
         }
@@ -39,7 +40,7 @@ public class FilmService {
                 .collect(Collectors.toList()));
     }
 
-    public List<Film> findAll() {
+    public Collection<Film> findAll() {
         return filmStorage.findAll();
     }
 

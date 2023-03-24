@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface FilmStorage {
 
-    List<Film> findAll();
+    Collection<Film> findAll();
 
     Film createFilm(Film film);
 

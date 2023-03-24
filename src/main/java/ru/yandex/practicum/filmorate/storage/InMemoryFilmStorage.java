@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     private long id = 1;
 
     @Override
-    public List<Film> findAll() {
+    public Collection<Film> findAll() {
         log.debug("Получение списка фильмов в InMemoryFilmStorage. Текущее количество фильмов: {}", films.size());
         return List.copyOf(films.values());
     }
@@ -37,13 +38,13 @@ public class InMemoryFilmStorage implements FilmStorage {
         return film;
     }
 
-    public List<Film> getFilms() {
+    public Collection<Film> getFilms() {
         log.debug("Получение List of films");
         return List.copyOf(films.values());
     }
 
     @Override
     public Film getFilmById(long id) {
-        return films.getOrDefault(id, null);
+        return films.get(id);
     }
 }

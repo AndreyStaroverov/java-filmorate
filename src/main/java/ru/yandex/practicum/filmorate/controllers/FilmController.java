@@ -12,21 +12,21 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.List;
 
 @RestController
 @Slf4j
 public class FilmController {
 
-    private FilmService filmService;
+    private final FilmService filmService;
 
-    @Autowired
-    public void setFilmService(FilmService filmService) {
+    public FilmController(@Autowired FilmService filmService) {
         this.filmService = filmService;
     }
 
     @GetMapping("/films")
-    public List<Film> filmsAll() {
+    public Collection<Film> filmsAll() {
         log.debug("Попытка получить список пользователей...");
         return filmService.findAll();
     }
@@ -42,7 +42,7 @@ public class FilmController {
     }
 
     @GetMapping("/films/popular")
-    public List<Film> filmsMostPopular(@RequestParam(value = "count", defaultValue = "10", required = false) Integer count) {
+    public Collection<Film> filmsMostPopular(@RequestParam(value = "count", defaultValue = "10", required = false) Integer count) {
         log.debug("Попытка получить список пользователей...");
         return filmService.getRateFilms(count);
     }

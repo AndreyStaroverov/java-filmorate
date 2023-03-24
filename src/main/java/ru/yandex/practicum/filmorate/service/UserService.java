@@ -9,17 +9,16 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 import java.util.*;
 
 @Service
-@RequiredArgsConstructor
 public class UserService {
 
-    UserStorage userStorage;
+    private final UserStorage userStorage;
 
-    @Autowired
-    public void setStorage(UserStorage storage) {
-        this.userStorage = storage;
+    public UserService(@Autowired UserStorage userStorage) {
+        this.userStorage = userStorage;
     }
 
-    public List<User> findAll() {
+
+    public Collection<User> findAll() {
         return userStorage.findAll();
     }
 
@@ -35,7 +34,7 @@ public class UserService {
         return userStorage.getUserById(userId);
     }
 
-    public List<User> getClosedFriends(Long userId, Long friendId) {
+    public Collection<User> getClosedFriends(Long userId, Long friendId) {
         Set<Long> userFriends = new HashSet<>(userStorage.getUserById(userId).getFriends());
         userFriends.retainAll(userStorage.getUserById(friendId).getFriends());
         List<User> common = new ArrayList<>();
@@ -57,7 +56,7 @@ public class UserService {
         return userStorage.updateUser(user);
     }
 
-    public List<User> getFriendsById(long id) {
+    public Collection<User> getFriendsById(long id) {
         return userStorage.getFriendsById(id);
     }
 }

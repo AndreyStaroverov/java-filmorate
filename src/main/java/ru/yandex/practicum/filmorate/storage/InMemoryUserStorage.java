@@ -15,7 +15,7 @@ public class InMemoryUserStorage implements UserStorage {
     private long id = 1;
 
     @Override
-    public List<User> findAll() {
+    public Collection<User> findAll() {
         log.debug("Получение списка пользователей в InMemoryUserStorage: Текущее количество users: {}", users.size());
         return List.copyOf(users.values());
     }
@@ -38,16 +38,15 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getUserById(Long id) {
-        return users.getOrDefault(id, null);
+        return users.get(id);
     }
 
     @Override
-    public List<User> getFriendsById(long id) {
+    public Collection<User> getFriendsById(long id) {
         List<User> userFriends = new ArrayList<>();
-        for (Long user : users.get(id).getFriends()) {
-            userFriends.add(users.get(user));
+        for (Long user : users.get(id).getFriends()) { //Получаем список id друзей
+            userFriends.add(users.get(user)); // собираем новый список чтобы вернуть список пользователей, а не id
         }
         return userFriends;
     }
-
 }

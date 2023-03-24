@@ -4,12 +4,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.User;
 
+import java.util.Collection;
 import java.util.List;
 
 @Component
 public interface UserStorage {
 
-    List<User> findAll();
+    Collection<User> findAll();
 
     User createUser(User user);
 
@@ -17,5 +18,5 @@ public interface UserStorage {
 
     User getUserById(Long id);
 
-    List<User> getFriendsById(long id);
+    Collection<User> getFriendsById(long id);
 }

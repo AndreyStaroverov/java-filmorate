@@ -12,21 +12,22 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.List;
 
 @RestController
 @Slf4j
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    public void setService(UserService userService) {
+    public UserController(@Autowired UserService userService) {
         this.userService = userService;
     }
 
+
     @GetMapping("/users")
-    public List<User> findAll() {
+    public Collection<User> findAll() {
         log.debug("Попытка получить список пользователей...");
         return userService.findAll();
     }
@@ -41,7 +42,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}/friends")
-    public List<User> getUserFriends(@PathVariable("id") long id) {
+    public Collection<User> getUserFriends(@PathVariable("id") long id) {
         if (userService.getUserById(id) == null) {
             throw new UserNotFoundException("Пользователя не существует, добавтье нового пользователя");
         }
@@ -53,7 +54,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}/friends/common/{otherId}")
-    public List<User> getCommonUserFriends(@PathVariable("id") long id, @PathVariable("otherId") long otherId) {
+    public Collection<User> getCommonUserFriends(@PathVariable("id") long id, @PathVariable("otherId") long otherId) {
         log.debug("Попытка получить друзей пользователя");
         if (userService.getUserById(id) == null) {
             throw new UserNotFoundException("Пользователя id не существует, добавтье нового пользователя");
