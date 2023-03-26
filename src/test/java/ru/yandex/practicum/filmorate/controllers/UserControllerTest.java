@@ -44,6 +44,18 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
+    void whenId_is_9999() {
+        MockHttpServletResponse response = mockMvc.perform(get("/users/9999")
+                        .contentType("application/json"))
+                .andExpect(status().isNotFound())
+                .andReturn()
+                .getResponse();
+
+        assertEquals(404, response.getStatus());
+    }
+
+    @SneakyThrows
+    @Test
     void whenNullValueUser_EmptyModel_PostReturn400() {
         User incorrectUser = new User(0, "", "", "", LocalDate.of(1,1,1));
         MockHttpServletResponse response = mockMvc.perform(post("/users")
@@ -70,7 +82,7 @@ class UserControllerTest {
                 .getResponse();
 
 
-        assertEquals(404, responseTwo.getStatus());
+        assertEquals(400, responseTwo.getStatus());
     }
 
     @SneakyThrows
@@ -93,7 +105,7 @@ class UserControllerTest {
     @SneakyThrows
     @Test
     void whenNameUserEmptyReturn200_changeNameToLogin() {
-        ;
+
         User incorrectUser = new User(1, "mailTest@yandex.ru", "Michail", "",
                 LocalDate.of(2002, 10, 5));
         MockHttpServletResponse response = mockMvc.perform(post("/users")
@@ -178,11 +190,11 @@ class UserControllerTest {
         MockHttpServletResponse responseTwo = mockMvc.perform(post("/users")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(incorrectUser)))
-                .andExpect(status().isNotFound())
+                .andExpect(status().isBadRequest())
                 .andReturn()
                 .getResponse();
 
-        assertEquals(404, responseTwo.getStatus());
+        assertEquals(400, responseTwo.getStatus());
     }
 
     @SneakyThrows
@@ -207,6 +219,5 @@ class UserControllerTest {
                 .getResponse();
 
         assertEquals(200, responseTwo.getStatus());
-    }
-
+        }
     }

@@ -153,18 +153,18 @@ class FilmControllerTest {
 
     @SneakyThrows
     @Test
-    void whenUpdateUnknownFilm_status404() {
+    void whenUpdateUnknownFilm_status400() {
         Film film = new Film(1, "Film", "Very big",
                 LocalDate.of(1860, 12, 20), -1);
 
         MockHttpServletResponse response = mockMvc.perform(put("/films")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(film)))
-                .andExpect(status().isNotFound())
+                .andExpect(status().isBadRequest())
                 .andReturn()
                 .getResponse();
 
 
-        assertEquals(404, response.getStatus());
+        assertEquals(400, response.getStatus());
     }
 }
