@@ -11,10 +11,12 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@Builder
 @AllArgsConstructor
 public class User {
 
@@ -30,6 +32,7 @@ public class User {
     @Past
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE )
     private LocalDate birthday;
-    private final Set<Long> friends = new HashSet<>();
+    private Set<Long> friends = new HashSet<>();
+    private String status_of_friendship;
 }
 
