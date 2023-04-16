@@ -36,7 +36,7 @@ public class FilmService {
             log.debug("ValidationException in PUT/films");
             throw new UserNotFoundException("userId is bad");
         }
-        filmStorage.getFilmById(filmId).getLikes().add(userId);
+        filmStorage.addLike(filmId, userId);
         return filmStorage.getFilmById(filmId);
     }
 
@@ -51,7 +51,7 @@ public class FilmService {
             log.debug("ValidationException in PUT/films");
             throw new UserNotFoundException("userId is bad");
         }
-        filmStorage.getFilmById(filmId).getLikes().remove(userId);
+        filmStorage.deleteLike(filmId, userId);
         return filmStorage.getFilmById(filmId);
     }
 
