@@ -33,7 +33,7 @@ public class UserDbStorage implements UserStorage {
                 .name(resultSet.getString("username"))
                 .birthday(resultSet.getDate("birthday_date").toLocalDate())
                 .friends(friendsFromDb(resultSet.getLong("user_id")))
-                .status_of_friendship(statusOfFriendships(resultSet.getLong("user_id")))
+                //.status_of_friendship(statusOfFriendships(resultSet.getLong("user_id")))
                 .build();
     }
 

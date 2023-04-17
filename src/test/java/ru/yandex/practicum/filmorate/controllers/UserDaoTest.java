@@ -35,8 +35,10 @@ class UserDaoTest {
     @Test
     public void findAlltest(){
 
+//        User user = new User(1L, "mailTest@yandex.ru", "login", "Ter",
+//                LocalDate.of(2002, 10, 5), new HashSet<>(), "confirmed");
         User user = new User(1L, "mailTest@yandex.ru", "login", "Ter",
-                LocalDate.of(2002, 10, 5), new HashSet<>(), "confirmed");
+                LocalDate.of(2002, 10, 5), new HashSet<>());
 
         assertThat(userDbStorage.findAll().isEmpty()).isTrue();
 
@@ -48,8 +50,10 @@ class UserDaoTest {
     }
     @Test
     public void createUser(){
+//        User user = new User(1L, "mailTest@yandex.ru", "login", "Ter",
+//                LocalDate.of(2002, 10, 5), new HashSet<>(), "confirmed");
         User user = new User(1L, "mailTest@yandex.ru", "login", "Ter",
-                LocalDate.of(2002, 10, 5), new HashSet<>(), "confirmed");
+                LocalDate.of(2002, 10, 5), new HashSet<>());
 
         assertThat(userDbStorage.createUser(user)).isNotNull();
         assertThat(userDbStorage.getUserById(1L).getName()).isEqualTo("Ter");
@@ -57,11 +61,15 @@ class UserDaoTest {
 
     @Test
     public void updateUser(){
+//        User user = new User(1L, "mailTest@yandex.ru", "login", "Ter",
+//                LocalDate.of(2002, 10, 5), new HashSet<>(), "confirmed");
         User user = new User(1L, "mailTest@yandex.ru", "login", "Ter",
-                LocalDate.of(2002, 10, 5), new HashSet<>(), "confirmed");
+                LocalDate.of(2002, 10, 5), new HashSet<>());
         userDbStorage.createUser(user);
+//        User userUpdate = new User(1L, "mailTest@yandex.ru", "login", "TerUpdate",
+//                LocalDate.of(2002, 10, 5), new HashSet<>(), "confirmed");
         User userUpdate = new User(1L, "mailTest@yandex.ru", "login", "TerUpdate",
-                LocalDate.of(2002, 10, 5), new HashSet<>(), "confirmed");
+                LocalDate.of(2002, 10, 5), new HashSet<>());
         userDbStorage.updateUser(userUpdate);
 
         assertThat(userDbStorage.getUserById(1L).getName()).isEqualTo("TerUpdate");
@@ -70,8 +78,10 @@ class UserDaoTest {
 
     @Test
     public void getUserById(){
+//        User user = new User(1L, "mailTest@yandex.ru", "login", "Ter",
+//                LocalDate.of(2002, 10, 5), new HashSet<>(), "confirmed");
         User user = new User(1L, "mailTest@yandex.ru", "login", "Ter",
-                LocalDate.of(2002, 10, 5), new HashSet<>(), "confirmed");
+                LocalDate.of(2002, 10, 5), new HashSet<>());
         userDbStorage.createUser(user);
 
         assertThat(userDbStorage.getUserById(1L)).isNotNull();
@@ -80,11 +90,15 @@ class UserDaoTest {
 
     @Test
     public void getFriendsById(){
+//        User user = new User(1L, "mailTest@yandex.ru", "login", "Ter",
+//                LocalDate.of(2002, 10, 5), new HashSet<>(), "confirmed");
         User user = new User(1L, "mailTest@yandex.ru", "login", "Ter",
-                LocalDate.of(2002, 10, 5), new HashSet<>(), "confirmed");
+                LocalDate.of(2002, 10, 5), new HashSet<>());
         userDbStorage.createUser(user);
-        User userTwo = new User(2L, "mail222Test@yandex.ru", "login2", "Ter2",
-                LocalDate.of(2002, 10, 5), new HashSet<>(), "confirmed");
+//        User userTwo = new User(2L, "mail222Test@yandex.ru", "login2", "Ter2",
+//                LocalDate.of(2002, 10, 5), new HashSet<>(), "confirmed");
+        User userTwo = new User(1L, "mail222Test@yandex.ru", "login2", "Ter2",
+                LocalDate.of(2002, 10, 5), new HashSet<>());
         userDbStorage.createUser(userTwo);
         userDbStorage.addFriends(user.getId(), userTwo.getId());
 
@@ -94,11 +108,15 @@ class UserDaoTest {
 
     @Test
     public void addFriends(){
+//        User user = new User(1L, "mailTest@yandex.ru", "login", "Ter",
+//                LocalDate.of(2002, 10, 5), new HashSet<>(), "confirmed");
         User user = new User(1L, "mailTest@yandex.ru", "login", "Ter",
-                LocalDate.of(2002, 10, 5), new HashSet<>(), "confirmed");
+                LocalDate.of(2002, 10, 5), new HashSet<>());
         userDbStorage.createUser(user);
-        User userTwo = new User(2L, "mail222Test@yandex.ru", "login2", "Ter2",
-                LocalDate.of(2002, 10, 5), new HashSet<>(), "confirmed");
+//        User userTwo = new User(2L, "mail222Test@yandex.ru", "login2", "Ter2",
+//                LocalDate.of(2002, 10, 5), new HashSet<>(), "confirmed");
+        User userTwo = new User(1L, "mail222Test@yandex.ru", "login2", "Ter2",
+                LocalDate.of(2002, 10, 5), new HashSet<>());
         userDbStorage.createUser(userTwo);
 
         assertThat(userDbStorage.addFriends(user.getId(), userTwo.getId())).isNotNull();
@@ -107,11 +125,15 @@ class UserDaoTest {
 
     @Test
     public void deleteFriends(){
+        //User user = new User(1L, "mailTest@yandex.ru", "login", "Ter",
+//                LocalDate.of(2002, 10, 5), new HashSet<>(), "confirmed");
         User user = new User(1L, "mailTest@yandex.ru", "login", "Ter",
-                LocalDate.of(2002, 10, 5), new HashSet<>(), "confirmed");
+                LocalDate.of(2002, 10, 5), new HashSet<>());
         userDbStorage.createUser(user);
-        User userTwo = new User(2L, "mail222Test@yandex.ru", "login2", "Ter2",
-                LocalDate.of(2002, 10, 5), new HashSet<>(), "confirmed");
+//        User userTwo = new User(2L, "mail222Test@yandex.ru", "login2", "Ter2",
+//                LocalDate.of(2002, 10, 5), new HashSet<>(), "confirmed");
+        User userTwo = new User(1L, "mail222Test@yandex.ru", "login2", "Ter2",
+                LocalDate.of(2002, 10, 5), new HashSet<>());
         userDbStorage.createUser(userTwo);
 
         assertThat(userDbStorage.addFriends(user.getId(), userTwo.getId())).isNotNull();
