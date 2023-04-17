@@ -24,7 +24,7 @@ public class Film {
     @Size(max = 200)
     private String description;
     @NonNull
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE )
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @FilmDateApprove
     private LocalDate releaseDate;
     @Positive
