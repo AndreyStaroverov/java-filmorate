@@ -29,7 +29,7 @@ public class MpaController {
     }
 
     @GetMapping("/mpa/{id}")
-    public Mpa filmsAll(@PathVariable("id") Long id) {
+    public Mpa mpaAll(@PathVariable("id") Long id) {
         log.debug("Попытка получить mpa по идентификатору");
         return mpaService.getMpaById(id);
     }

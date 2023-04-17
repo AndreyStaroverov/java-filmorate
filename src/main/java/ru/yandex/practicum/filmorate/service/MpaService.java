@@ -4,8 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.exceptions.MpaNotFoundException;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
 
@@ -29,7 +28,7 @@ public class MpaService {
             mpaStorage.getMpaById(id);
         } catch (EmptyResultDataAccessException e){
             log.debug("ValidationException in PUT/mpa");
-            throw new FilmNotFoundException("Not found");
+            throw new MpaNotFoundException("Not found");
         }
         return mpaStorage.getMpaById(id);
     }

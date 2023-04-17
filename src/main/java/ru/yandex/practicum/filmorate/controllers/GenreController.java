@@ -23,13 +23,13 @@ public class GenreController {
     }
 
     @GetMapping("/genres")
-    public Collection<Genre> filmsAll() {
-        log.debug("Попытка получить список пользователей...");
+    public Collection<Genre> genresAll() {
+        log.debug("Попытка получить список genres...");
         return genreService.findAll();
     }
 
     @GetMapping("/genres/{id}")
-    public Genre filmsAll(@PathVariable("id") Long id) {
+    public Genre genresAll(@PathVariable("id") Long id) {
         log.debug("Попытка получить genre по идентификатору");
         return genreService.getGenreById(id);
     }
