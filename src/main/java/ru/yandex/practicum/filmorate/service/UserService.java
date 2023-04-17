@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -29,12 +28,12 @@ public class UserService {
     public User addFriends(Long userId, Long friendId) {
         try {
             userStorage.getUserById(userId);
-        } catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             throw new UserNotFoundException("Пользователя не существует, добавтье нового пользователя");
         }
         try {
             userStorage.getUserById(friendId);
-        } catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             throw new UserNotFoundException("Пользователя не существует, добавтье нового пользователя");
         }
         if (userId < 0 || friendId < 0) {
@@ -46,12 +45,12 @@ public class UserService {
     public User deleteFriends(Long userId, Long friendId) {
         try {
             userStorage.getUserById(userId);
-        } catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             throw new UserNotFoundException("Пользователя не существует, добавтье нового пользователя");
         }
         try {
             userStorage.getUserById(friendId);
-        } catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             throw new UserNotFoundException("Пользователя не существует, добавтье нового пользователя");
         }
         if (userId < 0 || friendId < 0) {
@@ -63,12 +62,12 @@ public class UserService {
     public Collection<User> getClosedFriends(Long userId, Long friendId) {
         try {
             userStorage.getUserById(userId);
-        } catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             throw new UserNotFoundException("Пользователя не существует, добавтье нового пользователя");
         }
         try {
             userStorage.getUserById(friendId);
-        } catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             throw new UserNotFoundException("Пользователя не существует, добавтье нового пользователя");
         }
         if (userId < 0 || friendId < 0) {
@@ -86,7 +85,7 @@ public class UserService {
     public User getUserById(long id) {
         try {
             userStorage.getUserById(id);
-        } catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             throw new UserNotFoundException("Пользователя не существует, добавтье нового пользователя");
         }
         return userStorage.getUserById(id);
@@ -105,7 +104,7 @@ public class UserService {
     public User updateUser(User user) {
         try {
             userStorage.getUserById(user.getId());
-        } catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             throw new UserNotFoundException("Пользователя не существует, добавтье нового пользователя");
         }
         return userStorage.updateUser(user);
@@ -114,7 +113,7 @@ public class UserService {
     public Collection<User> getFriendsById(long id) {
         try {
             userStorage.getUserById(id);
-        } catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             throw new UserNotFoundException("Пользователя не существует, добавтье нового пользователя");
         }
         if (id < 0) {

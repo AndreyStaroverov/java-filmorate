@@ -21,8 +21,8 @@ public class UserDbStorage implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public UserDbStorage (@Autowired JdbcTemplate jdbcTemplate){
-        this.jdbcTemplate=jdbcTemplate;
+    public UserDbStorage(@Autowired JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     private User mapRowToUsers(ResultSet resultSet, int rowNum) throws SQLException {
@@ -67,11 +67,12 @@ public class UserDbStorage implements UserStorage {
         String sqlQuery = "select * from users";
         return jdbcTemplate.query(sqlQuery, this::mapRowToUsers);
     }
+
     @Override
     public User createUser(User user) {
         String sqlQuery = "insert into users(email, login, username, birthday_date)" +
                 "values (?, ?, ?, ?)";
-                jdbcTemplate.update(sqlQuery,
+        jdbcTemplate.update(sqlQuery,
                 user.getEmail(),
                 user.getLogin(),
                 user.getName(),
@@ -107,7 +108,7 @@ public class UserDbStorage implements UserStorage {
         String sqlQuery = "SELECT user_id from friends WHERE user_friend_id =" + id;
         List<Long> ids = jdbcTemplate.queryForList(sqlQuery, Long.class);
         Collection<User> friends = new ArrayList<>();
-        for (Long i: ids) {
+        for (Long i : ids) {
             friends.add(getUserById(i));
         }
         return friends;
@@ -138,9 +139,9 @@ public class UserDbStorage implements UserStorage {
                 "JOIN friends f2 ON f2.user_id = f1.user_id" +
                 "JOIN users u2 ON u2.user_id = f2.user_friend_id" +
                 "WHERE u.id =" + userId + " AND u2.id =" + friendId;
-        Collection<Long> ids =  jdbcTemplate.queryForList(sqlQuery, Long.class);
+        Collection<Long> ids = jdbcTemplate.queryForList(sqlQuery, Long.class);
         Collection<User> users = new ArrayList<>();
-        for (Long i: ids) {
+        for (Long i : ids) {
             users.add(getUserById(i));
         }
         return users;

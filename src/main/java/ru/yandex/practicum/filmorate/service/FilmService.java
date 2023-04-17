@@ -28,7 +28,7 @@ public class FilmService {
     public Film addLike(Long filmId, Long userId) {
         try {
             filmStorage.getFilmById(filmId);
-        } catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             log.debug("ValidationException in PUT/films");
             throw new FilmNotFoundException("Not found");
         }
@@ -43,7 +43,7 @@ public class FilmService {
     public Film deleteLike(Long filmId, Long userId) {
         try {
             filmStorage.getFilmById(filmId);
-        } catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             log.debug("ValidationException in PUT/films");
             throw new FilmNotFoundException("Not found");
         }
@@ -72,7 +72,7 @@ public class FilmService {
     public Film getFilmById(Long id) {
         try {
             filmStorage.getFilmById(id);
-        } catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             log.debug("ValidationException in PUT/films");
             throw new FilmNotFoundException("Not found");
         }
@@ -85,8 +85,8 @@ public class FilmService {
 
     public Film updateFilm(Film film) {
         try {
-        filmStorage.getFilmById(film.getId());
-        } catch (EmptyResultDataAccessException e){
+            filmStorage.getFilmById(film.getId());
+        } catch (EmptyResultDataAccessException e) {
             log.debug("ValidationException in PUT/films");
             throw new FilmNotFoundException("Not found");
         }

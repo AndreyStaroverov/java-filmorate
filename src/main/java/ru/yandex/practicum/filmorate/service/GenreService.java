@@ -26,7 +26,7 @@ public class GenreService {
     public Genre getGenreById(Long id) {
         try {
             genreStorage.getGenreById(id);
-        } catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             log.debug("ValidationException in PUT/genre");
             throw new GenreNotFoundException("Not found");
         }
