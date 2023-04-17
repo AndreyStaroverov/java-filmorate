@@ -33,7 +33,6 @@ public class UserDbStorage implements UserStorage {
                 .name(resultSet.getString("username"))
                 .birthday(resultSet.getDate("birthday_date").toLocalDate())
                 .friends(friendsFromDb(resultSet.getLong("user_id")))
-                //.status_of_friendship(statusOfFriendships(resultSet.getLong("user_id")))
                 .build();
     }
 
@@ -50,16 +49,6 @@ public class UserDbStorage implements UserStorage {
     private Set<Long> friendsFromDb(Long id) {
         String sqlQuery = "SELECT user_id from friends WHERE user_friend_id =" + id;
         return new HashSet<>(jdbcTemplate.queryForList(sqlQuery, Long.class));
-    }
-
-    private String statusOfFriendships(Long userId) {
-        String sqlQuery = "SELECT status_code from friends where user_friend_id =" + userId;
-        List<Long> frList = jdbcTemplate.queryForList(sqlQuery, Long.class);
-        if (frList.contains(1L)) {
-            return "not confirmed";
-        } else {
-            return "all confirmed";
-        }
     }
 
     @Override

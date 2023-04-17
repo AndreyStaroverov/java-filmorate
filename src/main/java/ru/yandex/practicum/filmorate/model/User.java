@@ -32,6 +32,5 @@ public class User {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate birthday;
     private Set<Long> friends = new HashSet<>();
-    //private String status_of_friendship;
 }
 

@@ -26,7 +26,7 @@ public class MpaService {
     public Mpa getMpaById(Long id) {
         try {
             mpaStorage.getMpaById(id);
-        } catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             log.debug("ValidationException in PUT/mpa");
             throw new MpaNotFoundException("Not found");
         }
