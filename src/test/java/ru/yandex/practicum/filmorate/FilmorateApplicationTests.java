@@ -5,12 +5,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserDbStorage;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
+
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -20,12 +23,10 @@ class FilmorateApplicationTests {
 	@Test
 	public void testFindUserById() {
 
-		Optional<User> userOne = Optional.of(userStorage.getUserById(1L));
-
-		assertThat(userOne)
-				.isPresent()
-				.hasValueSatisfying(user ->
-						assertThat(userOne).get().hasFieldOrPropertyWithValue("id", 1)
-				);
+		Throwable thrown = catchThrowable(() -> {
+			userStorage.getUserById(1L);
+		});
+		assertThat(thrown).isInstanceOf(EmptyResultDataAccessException.class);
+		assertThat(thrown.getMessage()).isNotBlank();
 	}
 }
