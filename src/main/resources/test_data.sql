@@ -1,15 +1,32 @@
-insert into status (status_id, name) values (1, 'not confirmed');
-insert into status (status_id, name) values (2, 'confirmed');
+insert into status (name) values ('not confirmed');
+insert into status (name) values ('confirmed');
 
-insert into genre (name) values ('Комедия');
-insert into genre (name) values ('Драма');
-insert into genre (name) values ('Мультфильм');
-insert into genre (name) values ('Триллер');
-insert into genre (name) values ('Документальный');
-insert into genre (name) values ('Боевик');
+INSERT INTO genre (name)
+SELECT 'Комедия'
+UNION ALL
+SELECT 'Драма'
+UNION ALL
+SELECT'Мультфильм'
+UNION ALL
+SELECT 'Триллер'
+UNION ALL
+SELECT 'Документальный'
+UNION ALL
+SELECT 'Боевик'
+WHERE NOT EXISTS (
+  SELECT * FROM genre WHERE name IN ( 'Комедия', 'Драма', 'Мультфильм', 'Триллер',
+'Документальный', 'Боевик'));
 
-insert into MPA_RATING (name) values ('G');
-insert into MPA_RATING (name) values ('PG');
-insert into MPA_RATING (name) values ('PG-13');
-insert into MPA_RATING (name) values ('R');
-insert into MPA_RATING (name) values ('NC-17');
+INSERT INTO MPA_RATING (name)
+SELECT 'G'
+UNION ALL
+SELECT 'PG'
+UNION ALL
+SELECT'PG-13'
+UNION ALL
+SELECT 'R'
+UNION ALL
+SELECT 'NC-17'
+WHERE NOT EXISTS (
+  SELECT * FROM genre WHERE name IN ( 'G', 'PG', 'PG-13', 'R',
+'NC-17'));
