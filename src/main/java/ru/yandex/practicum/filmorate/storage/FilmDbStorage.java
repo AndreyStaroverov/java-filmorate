@@ -41,7 +41,7 @@ public class FilmDbStorage implements FilmStorage {
                     film.getDescription(),
                     film.getReleaseDate(),
                     film.getDuration(),
-                    0,0,
+                    0, 0,
                     film.getMpa().getId());
         } else {
             jdbcTemplate.update(sqlQuery,
