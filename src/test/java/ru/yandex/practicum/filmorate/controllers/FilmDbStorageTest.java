@@ -12,7 +12,9 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmDbStorage;
+import ru.yandex.practicum.filmorate.storage.UserDbStorage;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -34,6 +36,8 @@ class FilmDbStorageTest {
 
     @Autowired
     FilmDbStorage filmDbStorage;
+    @Autowired
+    UserDbStorage userDbStorage;
 
     @Test
     public void test_FindAll() {
@@ -116,6 +120,10 @@ class FilmDbStorageTest {
                 LocalDate.of(2020, 12, 20), 90L, new HashSet<>(),
                 new Mpa(1L, null), new HashSet<>());
         filmDbStorage.createFilm(film);
+        User user = new User(1L, "mailTest@yandex.ru", "login", "Ter",
+                LocalDate.of(2002, 10, 5), new HashSet<>());
+
+        assertThat(userDbStorage.createUser(user)).isNotNull();
 
         assertThat(filmDbStorage.addLike(1L, 1L).getLikes().size()).isEqualTo(1);
     }
@@ -126,6 +134,10 @@ class FilmDbStorageTest {
                 LocalDate.of(2020, 12, 20), 90L, new HashSet<>(),
                 new Mpa(1L, null), new HashSet<>());
         filmDbStorage.createFilm(film);
+        User user = new User(1L, "mailTest@yandex.ru", "login", "Ter",
+                LocalDate.of(2002, 10, 5), new HashSet<>());
+
+        assertThat(userDbStorage.createUser(user)).isNotNull();
 
         assertThat(filmDbStorage.addLike(1L, 1L).getLikes().size()).isEqualTo(1);
         assertThat(filmDbStorage.deleteLike(1L, 1L).getLikes().isEmpty()).isTrue();
