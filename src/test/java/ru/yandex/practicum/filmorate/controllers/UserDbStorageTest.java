@@ -29,7 +29,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 class UserDbStorageTest {
 
     @Autowired
-    private UserDbStorage userDbStorage;
+    UserDbStorage userDbStorage;
 
 
     @Test

@@ -18,7 +18,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class MpaDbStorageTest {
 
-    private final MpaDbStorage mpaDbStorage;
+    @Autowired
+    MpaDbStorage mpaDbStorage;
 
     @Test
     public void tryGetCollectionWithAllMpas() {

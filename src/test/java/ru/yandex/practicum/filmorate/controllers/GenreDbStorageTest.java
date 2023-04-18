@@ -19,7 +19,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 class GenreDbStorageTest {
 
     @Autowired
-    private final GenreDbStorage genreDbStorage;
+    GenreDbStorage genreDbStorage;
 
     @Test
     public void tryGetCollectionWithAllGenres() {

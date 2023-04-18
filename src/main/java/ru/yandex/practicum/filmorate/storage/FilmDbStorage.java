@@ -5,14 +5,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.maprows.MapRowsForFilm;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 
 @Component
@@ -20,73 +17,31 @@ import java.util.Set;
 public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
+    private final MapRowsForFilm mapRowsForFilm;
 
-    public FilmDbStorage(@Autowired JdbcTemplate jdbcTemplate) {
+    public FilmDbStorage(@Autowired JdbcTemplate jdbcTemplate, MapRowsForFilm mapRowsForFilm) {
         this.jdbcTemplate = jdbcTemplate;
-    }
-
-    private Film mapRowToFilms(ResultSet resultSet, int rowNum) throws SQLException {
-        return Film.builder()
-                .id(resultSet.getLong("film_id"))
-                .name(resultSet.getString("name"))
-                .description(resultSet.getString("description"))
-                .releaseDate(resultSet.getDate("release_date").toLocalDate())
-                .duration(resultSet.getLong("duration"))
-                .likes(likesFromDb(resultSet.getLong("film_id")))
-                .mpa(mpaFromDb(resultSet.getLong("mpa_id")))
-                .genres(genresFromDb(resultSet.getLong("film_id")))
-                .build();
-    }
-
-    private Mpa mapRowToMpa(ResultSet resultSet, int rowNum) throws SQLException {
-        return Mpa.builder()
-                .id(resultSet.getLong("mpa_id"))
-                .name(resultSet.getString("name"))
-                .build();
-    }
-
-    private Genre mapRowToGenre(ResultSet resultSet, int rowNum) throws SQLException {
-        return Genre.builder()
-                .id(resultSet.getLong("genre_id"))
-                .name(resultSet.getString("name"))
-                .build();
-    }
-
-    private Set<Long> likesFromDb(Long id) {
-        String sqlQuery = "SELECT user_id from likes WHERE film_id  =" + id;
-        return new HashSet<>(jdbcTemplate.queryForList(sqlQuery, Long.class));
-    }
-
-    private Set<Genre> genresFromDb(Long id) {
-        String sqlQuery = "SELECT genre_id, " +
-                "(SELECT name FROM genre WHERE GENRE_ID = genres.GENRE_ID) AS name " +
-                "from genres " +
-                "where film_id = " + id;
-        return new HashSet<>(jdbcTemplate.query(sqlQuery, this::mapRowToGenre));
-    }
-
-    private Mpa mpaFromDb(Long id) {
-        String sqlQuery = "SELECT mpa_id, name from mpa_rating where mpa_id = " + id;
-        return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToMpa);
+        this.mapRowsForFilm = mapRowsForFilm;
     }
 
     @Override
     public Collection<Film> findAll() {
         String sqlQuery = "select * from film";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToFilms);
+        return jdbcTemplate.query(sqlQuery, mapRowsForFilm::mapRowToFilms);
     }
 
     @Override
     public Film createFilm(Film film) {
-        String sqlQuery = "insert into film(name, description, release_date , duration , genre_id , mpa_id) " +
-                "values (?, ?, ?, ?, ? , ?)";
+        String sqlQuery = "insert into film(name, description, release_date , duration , likes_id, genre_id, mpa_id) " +
+                "values (?, ?, ?, ?, ? , ?, ?)";
+
         if (film.getGenres() == null) {
             jdbcTemplate.update(sqlQuery,
                     film.getName(),
                     film.getDescription(),
                     film.getReleaseDate(),
                     film.getDuration(),
-                    film.getGenres(),
+                    0,0,
                     film.getMpa().getId());
         } else {
             jdbcTemplate.update(sqlQuery,
@@ -94,6 +49,7 @@ public class FilmDbStorage implements FilmStorage {
                     film.getDescription(),
                     film.getReleaseDate(),
                     film.getDuration(),
+                    0,
                     film.getGenres().size(),
                     film.getMpa().getId());
             String sqlQueryTwo = "Select film_id from film where name = ?";
@@ -101,7 +57,7 @@ public class FilmDbStorage implements FilmStorage {
         }
         String sqlQueryTwo = "Select film_id, name, description, release_date , duration , genre_id , mpa_id" +
                 " from film where name = ?";
-        return jdbcTemplate.queryForObject(sqlQueryTwo, this::mapRowToFilms, film.getName());
+        return jdbcTemplate.queryForObject(sqlQueryTwo, mapRowsForFilm::mapRowToFilms, film.getName());
     }
 
     private Set<Genre> setGenreToDb(Set<Genre> genres, Long id) {
@@ -112,7 +68,7 @@ public class FilmDbStorage implements FilmStorage {
                     "values(?,?)";
             jdbcTemplate.update(sqlQuery, id, g.getId());
         }
-        return genresFromDb(id);
+        return mapRowsForFilm.genresFromDb(id);
     }
 
     @Override
@@ -126,7 +82,7 @@ public class FilmDbStorage implements FilmStorage {
                     film.getDescription(),
                     film.getReleaseDate(),
                     film.getDuration(),
-                    null,
+                    0,
                     film.getMpa().getId(),
                     film.getId());
             String sqlOneQuery = "Delete from genres where film_id = " + film.getId();
@@ -145,19 +101,19 @@ public class FilmDbStorage implements FilmStorage {
                     film.getId());
         }
         String sqlQueryTwo = "Select * from film where film_id = ?";
-        return jdbcTemplate.queryForObject(sqlQueryTwo, this::mapRowToFilms, film.getId());
+        return jdbcTemplate.queryForObject(sqlQueryTwo, mapRowsForFilm::mapRowToFilms, film.getId());
     }
 
     @Override
     public Film getFilmById(long id) throws EmptyResultDataAccessException {
         String sqlQuery = "select * from film where film_id = ?";
-        return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToFilms, id);
+        return jdbcTemplate.queryForObject(sqlQuery, mapRowsForFilm::mapRowToFilms, id);
     }
 
     @Override
     public Collection<Film> getFilms() {
         String sqlQuery = "select * from film";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToFilms);
+        return jdbcTemplate.query(sqlQuery, mapRowsForFilm::mapRowToFilms);
     }
 
     @Override

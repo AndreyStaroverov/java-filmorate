@@ -33,7 +33,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 class FilmDbStorageTest {
 
     @Autowired
-    private FilmDbStorage filmDbStorage;
+    FilmDbStorage filmDbStorage;
 
     @Test
     public void test_FindAll() {
