@@ -16,7 +16,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class MpaDaoTest {
+class MpaDbStorageTest {
 
     private final MpaDbStorage mpaDbStorage;
 

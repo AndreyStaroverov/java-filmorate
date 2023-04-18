@@ -30,7 +30,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 })
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class FilmDaoTest {
+class FilmDbStorageTest {
 
     @Autowired
     private FilmDbStorage filmDbStorage;

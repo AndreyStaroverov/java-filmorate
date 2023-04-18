@@ -16,7 +16,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-class GenreDaoTest {
+class GenreDbStorageTest {
 
     @Autowired
     private final GenreDbStorage genreDbStorage;
