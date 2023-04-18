@@ -22,7 +22,7 @@ class GenreDbStorageTest {
     private final GenreDbStorage genreDbStorage;
 
     @Test
-    public void tryGetCollectionWithAllGenres(){
+    public void tryGetCollectionWithAllGenres() {
 
         assertThat(genreDbStorage.findAll()).isNotNull();
         assertThat(genreDbStorage.findAll().size()).isEqualTo(6);
@@ -30,7 +30,7 @@ class GenreDbStorageTest {
     }
 
     @Test
-    public void tryGetGenreById(){
+    public void tryGetGenreById() {
 
         assertThat(genreDbStorage.getGenreById(1L).getName()).isNotBlank();
 
@@ -44,7 +44,7 @@ class GenreDbStorageTest {
     }
 
     @Test
-    public void tryGetIncorrectGenreById(){
+    public void tryGetIncorrectGenreById() {
         Throwable thrown = catchThrowable(() -> {
             genreDbStorage.getGenreById(500L);
         });

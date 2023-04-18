@@ -21,7 +21,7 @@ class MpaDbStorageTest {
     private final MpaDbStorage mpaDbStorage;
 
     @Test
-    public void tryGetCollectionWithAllMpas(){
+    public void tryGetCollectionWithAllMpas() {
 
         assertThat(mpaDbStorage.findAll()).isNotNull();
         assertThat(mpaDbStorage.findAll().size()).isEqualTo(5);
@@ -29,7 +29,7 @@ class MpaDbStorageTest {
     }
 
     @Test
-    public void tryGetMpaById(){
+    public void tryGetMpaById() {
 
         assertThat(mpaDbStorage.getMpaById(1L).getName()).isNotBlank();
 
@@ -42,7 +42,7 @@ class MpaDbStorageTest {
     }
 
     @Test
-    public void tryGetIncorrectMpaById(){
+    public void tryGetIncorrectMpaById() {
         Throwable thrown = catchThrowable(() -> {
             mpaDbStorage.getMpaById(500L);
         });

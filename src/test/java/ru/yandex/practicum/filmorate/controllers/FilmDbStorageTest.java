@@ -36,12 +36,12 @@ class FilmDbStorageTest {
     private FilmDbStorage filmDbStorage;
 
     @Test
-    public void test_FindAll(){
+    public void test_FindAll() {
 
         Film film = new Film(1L, "Drama", "Very big",
-                LocalDate.of(2020, 12, 20), 90L, new HashSet<>(), 
-                new Mpa(1L,null), new HashSet<>());
-        
+                LocalDate.of(2020, 12, 20), 90L, new HashSet<>(),
+                new Mpa(1L, null), new HashSet<>());
+
         assertThat(filmDbStorage.findAll().isEmpty()).isTrue();
 
         filmDbStorage.createFilm(film);
@@ -51,25 +51,25 @@ class FilmDbStorageTest {
     }
 
     @Test
-    public void test_createFilm(){
+    public void test_createFilm() {
 
         Film film = new Film(1L, "Drama", "Very big",
                 LocalDate.of(2020, 12, 20), 90L, new HashSet<>(),
-                new Mpa(1L,null), new HashSet<>());
-        
+                new Mpa(1L, null), new HashSet<>());
+
         assertThat(filmDbStorage.createFilm(film)).isNotNull();
         assertThat(filmDbStorage.getFilmById(1L).getName()).isEqualTo("Drama");
     }
 
     @Test
-    public void test_updateFilm(){
+    public void test_updateFilm() {
         Film film = new Film(1L, "Drama", "Very big",
                 LocalDate.of(2020, 12, 20), 90L, new HashSet<>(),
-                new Mpa(1L,null), new HashSet<>());
+                new Mpa(1L, null), new HashSet<>());
         filmDbStorage.createFilm(film);
         Film filmUpdate = new Film(1L, "DramaUpdate", "Very big",
                 LocalDate.of(2020, 12, 20), 90L, new HashSet<>(),
-                new Mpa(1L,null), new HashSet<>());
+                new Mpa(1L, null), new HashSet<>());
         filmDbStorage.updateFilm(filmUpdate);
 
         assertThat(filmDbStorage.getFilmById(1L).getName()).isEqualTo("DramaUpdate");
@@ -77,11 +77,11 @@ class FilmDbStorageTest {
     }
 
     @Test
-    public void test_getFilmById(){
+    public void test_getFilmById() {
 
         Film film = new Film(1L, "Drama", "Very big",
                 LocalDate.of(2020, 12, 20), 90L, new HashSet<>(),
-                new Mpa(1L,null), new HashSet<>());
+                new Mpa(1L, null), new HashSet<>());
         filmDbStorage.createFilm(film);
 
         assertThat(filmDbStorage.getFilmById(1L)).isNotNull();
@@ -95,15 +95,15 @@ class FilmDbStorageTest {
     }
 
     @Test
-    public void test_getFilms(){
+    public void test_getFilms() {
 
         Film film = new Film(1L, "Drama", "Very big",
                 LocalDate.of(2020, 12, 20), 90L, new HashSet<>(),
-                new Mpa(1L,null), new HashSet<>());
+                new Mpa(1L, null), new HashSet<>());
         filmDbStorage.createFilm(film);
         Film filmTwo = new Film(1L, "DramaTwo", "Very big",
                 LocalDate.of(2020, 12, 20), 90L, new HashSet<>(),
-                new Mpa(1L,null), new HashSet<>());
+                new Mpa(1L, null), new HashSet<>());
         filmDbStorage.createFilm(filmTwo);
 
         assertThat(filmDbStorage.getFilms().size()).isEqualTo(2);
@@ -111,23 +111,23 @@ class FilmDbStorageTest {
     }
 
     @Test
-    public void test_addLike(){
+    public void test_addLike() {
         Film film = new Film(1L, "Drama", "Very big",
                 LocalDate.of(2020, 12, 20), 90L, new HashSet<>(),
-                new Mpa(1L,null), new HashSet<>());
+                new Mpa(1L, null), new HashSet<>());
         filmDbStorage.createFilm(film);
 
-        assertThat(filmDbStorage.addLike(1L,1L).getLikes().size()).isEqualTo(1);
+        assertThat(filmDbStorage.addLike(1L, 1L).getLikes().size()).isEqualTo(1);
     }
 
     @Test
-    public void test_deleteLike(){
+    public void test_deleteLike() {
         Film film = new Film(1L, "Drama", "Very big",
                 LocalDate.of(2020, 12, 20), 90L, new HashSet<>(),
-                new Mpa(1L,null), new HashSet<>());
+                new Mpa(1L, null), new HashSet<>());
         filmDbStorage.createFilm(film);
 
-        assertThat(filmDbStorage.addLike(1L,1L).getLikes().size()).isEqualTo(1);
-        assertThat(filmDbStorage.deleteLike(1L,1L).getLikes().isEmpty()).isTrue();
+        assertThat(filmDbStorage.addLike(1L, 1L).getLikes().size()).isEqualTo(1);
+        assertThat(filmDbStorage.deleteLike(1L, 1L).getLikes().isEmpty()).isTrue();
     }
 }
