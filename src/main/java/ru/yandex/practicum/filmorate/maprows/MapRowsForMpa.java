@@ -7,9 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Component
-public class MapRowsForMpa {
+public final class MapRowsForMpa {
 
-    public Mpa mapRowToMpa(ResultSet resultSet, int rowNum) throws SQLException {
+    public static Mpa mapRowToMpa(ResultSet resultSet, int rowNum) throws SQLException {
         return Mpa.builder()
                 .id(resultSet.getLong("mpa_id"))
                 .name(resultSet.getString("name"))

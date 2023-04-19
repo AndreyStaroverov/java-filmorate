@@ -13,23 +13,21 @@ import java.util.Collection;
 public class MpaDbStorage implements MpaStorage {
 
     private final JdbcTemplate jdbcTemplate;
-    private final MapRowsForMpa mapRowsForMpa;
 
     @Autowired
-    public MpaDbStorage(JdbcTemplate jdbcTemplate, MapRowsForMpa mapRowsForMpa) {
+    public MpaDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.mapRowsForMpa = mapRowsForMpa;
     }
 
     @Override
     public Collection<Mpa> findAll() {
         String sqlQuery = "select mpa_id, name from mpa_rating";
-        return jdbcTemplate.query(sqlQuery, mapRowsForMpa::mapRowToMpa);
+        return jdbcTemplate.query(sqlQuery, MapRowsForMpa::mapRowToMpa);
     }
 
     @Override
     public Mpa getMpaById(Long id) {
         String sqlQuery = "select mpa_id, name from mpa_rating where mpa_id = ?";
-        return jdbcTemplate.queryForObject(sqlQuery, mapRowsForMpa::mapRowToMpa, id);
+        return jdbcTemplate.queryForObject(sqlQuery, MapRowsForMpa::mapRowToMpa, id);
     }
 }

@@ -6,10 +6,16 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.maprows.MapRowsForFilm;
+import ru.yandex.practicum.filmorate.maprows.MapRowsForGenres;
+import ru.yandex.practicum.filmorate.maprows.MapRowsForMpa;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 @Component
@@ -17,17 +23,23 @@ import java.util.Set;
 public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
-    private final MapRowsForFilm mapRowsForFilm;
 
-    public FilmDbStorage(@Autowired JdbcTemplate jdbcTemplate, MapRowsForFilm mapRowsForFilm) {
+    public FilmDbStorage(@Autowired JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.mapRowsForFilm = mapRowsForFilm;
+    }
+
+    private Film builderModel(ResultSet resultSet, int rowNum) throws SQLException {
+        Film film = MapRowsForFilm.mapRowToFilms(resultSet, rowNum);
+        film.setGenres(genresFromDb(resultSet.getLong("film_id")));
+        film.setMpa(mpaFromDb(resultSet.getLong("mpa_id")));
+        film.setLikes(likesFromDb(resultSet.getLong("film_id")));
+        return film;
     }
 
     @Override
     public Collection<Film> findAll() {
         String sqlQuery = "select * from film";
-        return jdbcTemplate.query(sqlQuery, mapRowsForFilm::mapRowToFilms);
+        return jdbcTemplate.query(sqlQuery, this::builderModel);
     }
 
     @Override
@@ -57,7 +69,7 @@ public class FilmDbStorage implements FilmStorage {
         }
         String sqlQueryTwo = "Select film_id, name, description, release_date , duration , genre_id , mpa_id" +
                 " from film where name = ?";
-        return jdbcTemplate.queryForObject(sqlQueryTwo, mapRowsForFilm::mapRowToFilms, film.getName());
+        return jdbcTemplate.queryForObject(sqlQueryTwo, this::builderModel, film.getName());
     }
 
     private Set<Genre> setGenreToDb(Set<Genre> genres, Long id) {
@@ -68,7 +80,7 @@ public class FilmDbStorage implements FilmStorage {
                     "values(?,?)";
             jdbcTemplate.update(sqlQuery, id, g.getId());
         }
-        return mapRowsForFilm.genresFromDb(id);
+        return genresFromDb(id);
     }
 
     @Override
@@ -101,19 +113,19 @@ public class FilmDbStorage implements FilmStorage {
                     film.getId());
         }
         String sqlQueryTwo = "Select * from film where film_id = ?";
-        return jdbcTemplate.queryForObject(sqlQueryTwo, mapRowsForFilm::mapRowToFilms, film.getId());
+        return jdbcTemplate.queryForObject(sqlQueryTwo, this::builderModel, film.getId());
     }
 
     @Override
     public Film getFilmById(long id) throws EmptyResultDataAccessException {
         String sqlQuery = "select * from film where film_id = ?";
-        return jdbcTemplate.queryForObject(sqlQuery, mapRowsForFilm::mapRowToFilms, id);
+        return jdbcTemplate.queryForObject(sqlQuery, this::builderModel, id);
     }
 
     @Override
     public Collection<Film> getFilms() {
         String sqlQuery = "select * from film";
-        return jdbcTemplate.query(sqlQuery, mapRowsForFilm::mapRowToFilms);
+        return jdbcTemplate.query(sqlQuery, this::builderModel);
     }
 
     @Override
@@ -128,5 +140,24 @@ public class FilmDbStorage implements FilmStorage {
         String sqlQuery = "delete from likes where user_id = ? AND film_id = ?";
         jdbcTemplate.update(sqlQuery, userId, filmId);
         return getFilmById(filmId);
+    }
+
+    public Set<Long> likesFromDb(Long id) {
+        String sqlQuery = "SELECT user_id from likes WHERE film_id  =" + id;
+        return new HashSet<>(jdbcTemplate.queryForList(sqlQuery, Long.class));
+    }
+
+    public Set<Genre> genresFromDb(Long id) {
+        String sqlQuery = "SELECT g.genre_id," +
+                " gr.name " +
+                "FROM genres AS g " +
+                "INNER JOIN genre AS gr ON g.genre_id = gr.genre_id " +
+                "WHERE FILM_ID = " + id;
+        return new HashSet<>(jdbcTemplate.query(sqlQuery, MapRowsForGenres::mapRowToGenre));
+    }
+
+    public Mpa mpaFromDb(Long id) {
+        String sqlQuery = "SELECT mpa_id, name from mpa_rating where mpa_id = " + id;
+        return jdbcTemplate.queryForObject(sqlQuery, MapRowsForMpa::mapRowToMpa);
     }
 }

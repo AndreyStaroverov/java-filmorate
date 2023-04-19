@@ -12,23 +12,20 @@ import java.util.Collection;
 public class GenreDbStorage implements GenreStorage {
     private final JdbcTemplate jdbcTemplate;
 
-    private final MapRowsForGenres mapRowsForGenres;
-
     @Autowired
-    public GenreDbStorage(JdbcTemplate jdbcTemplate, MapRowsForGenres mapRowsForGenres) {
+    public GenreDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.mapRowsForGenres = mapRowsForGenres;
     }
 
     @Override
     public Collection<Genre> findAll() {
         String sqlQuery = "select genre_id, name from genre";
-        return jdbcTemplate.query(sqlQuery, mapRowsForGenres::mapRowToGenre);
+        return jdbcTemplate.query(sqlQuery, MapRowsForGenres::mapRowToGenre);
     }
 
     @Override
     public Genre getGenreById(Long id) {
         String sqlQuery = "select genre_id, name from genre where genre_id = ?";
-        return jdbcTemplate.queryForObject(sqlQuery, mapRowsForGenres::mapRowToGenre, id);
+        return jdbcTemplate.queryForObject(sqlQuery, MapRowsForGenres::mapRowToGenre, id);
     }
 }

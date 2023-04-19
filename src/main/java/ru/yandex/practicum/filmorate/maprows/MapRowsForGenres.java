@@ -7,8 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Component
-public class MapRowsForGenres {
-    public Genre mapRowToGenre(ResultSet resultSet, int rowNum) throws SQLException {
+public final class MapRowsForGenres {
+    public static Genre mapRowToGenre(ResultSet resultSet, int rowNum) throws SQLException {
         return Genre.builder()
                 .id(resultSet.getLong("genre_id"))
                 .name(resultSet.getString("name"))

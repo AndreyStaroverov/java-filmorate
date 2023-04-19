@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.maprows.MapRowsForUsers;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 
 @Component
 @Qualifier("dbStorageUser")
@@ -22,18 +22,21 @@ public class UserDbStorage implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final MapRowsForUsers mapRowsForUsers;
-
     @Autowired
-    public UserDbStorage(JdbcTemplate jdbcTemplate, MapRowsForUsers mapRowsForUsers) {
+    public UserDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.mapRowsForUsers = mapRowsForUsers;
+    }
+
+    private User builderModel(ResultSet resultSet, int rowNum) throws SQLException {
+        User user = MapRowsForUsers.mapRowToUsers(resultSet, rowNum);
+        user.setFriends(friendsFromDb(resultSet.getLong("user_id")));
+        return user;
     }
 
     @Override
     public Collection<User> findAll() {
         String sqlQuery = "select * from users";
-        return jdbcTemplate.query(sqlQuery, mapRowsForUsers::mapRowToUsers);
+        return jdbcTemplate.query(sqlQuery, this::builderModel);
     }
 
     @Override
@@ -46,7 +49,7 @@ public class UserDbStorage implements UserStorage {
                 user.getName(),
                 user.getBirthday(), 0);
         String sqlQueryTwo = "Select user_id, email, login, username, birthday_date from users where email = ?";
-        return jdbcTemplate.queryForObject(sqlQueryTwo, mapRowsForUsers::mapRowToNewUsers, user.getEmail());
+        return jdbcTemplate.queryForObject(sqlQueryTwo, MapRowsForUsers::mapRowToUsers, user.getEmail());
     }
 
     @Override
@@ -61,14 +64,14 @@ public class UserDbStorage implements UserStorage {
                 user.getBirthday(),
                 user.getId());
         String sqlQueryTwo = "Select * from users where user_id = ?";
-        return jdbcTemplate.queryForObject(sqlQueryTwo, mapRowsForUsers::mapRowToNewUsers, user.getId());
+        return jdbcTemplate.queryForObject(sqlQueryTwo, MapRowsForUsers::mapRowToUsers, user.getId());
     }
 
     @Override
     public User getUserById(Long id) throws EmptyResultDataAccessException {
         String sqlQuery = "select user_id, email, login, username, birthday_date, friends_id " +
                 "from users where user_id = ?";
-        return jdbcTemplate.queryForObject(sqlQuery, mapRowsForUsers::mapRowToUsers, id);
+        return jdbcTemplate.queryForObject(sqlQuery, this::builderModel, id);
     }
 
     @Override
@@ -88,7 +91,7 @@ public class UserDbStorage implements UserStorage {
                 "values(?, ?, 1)";
         jdbcTemplate.update(sqlQuery, userId, friendId);
         String sqlQueryTwo = "Select * from users where user_id = ?";
-        return jdbcTemplate.queryForObject(sqlQueryTwo, mapRowsForUsers::mapRowToUsers, userId);
+        return jdbcTemplate.queryForObject(sqlQueryTwo, this::builderModel, userId);
     }
 
     @Override
@@ -96,7 +99,7 @@ public class UserDbStorage implements UserStorage {
         String sqlQuery = "delete from friends where user_friend_id = ? AND user_id = ?";
         jdbcTemplate.update(sqlQuery, userId, friendId);
         String sqlQueryTwo = "Select * from users where user_id = ?";
-        return jdbcTemplate.queryForObject(sqlQueryTwo, mapRowsForUsers::mapRowToUsers, userId);
+        return jdbcTemplate.queryForObject(sqlQueryTwo, this::builderModel, userId);
     }
 
     @Override //Оставил под будущее, мне кажется это идеальный вариант запрашивать у БД, а не сравнивать в сервисе.
@@ -113,5 +116,10 @@ public class UserDbStorage implements UserStorage {
             users.add(getUserById(i));
         }
         return users;
+    }
+
+    public Set<Long> friendsFromDb(Long id) {
+        String sqlQuery = "SELECT user_id from friends WHERE user_friend_id =" + id;
+        return new HashSet<>(jdbcTemplate.queryForList(sqlQuery, Long.class));
     }
 }
