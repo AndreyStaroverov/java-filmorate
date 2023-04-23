@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@Builder
 @AllArgsConstructor
 public class User {
 
@@ -28,8 +29,8 @@ public class User {
     private  String name;
     @NonNull
     @Past
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE )
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate birthday;
-    private final Set<Long> friends = new HashSet<>();
+    private Set<Long> friends = new HashSet<>();
 }
 
