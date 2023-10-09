@@ -1,9 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.lang.NonNull;
 import ru.yandex.practicum.filmorate.vakidations.FilmDateApprove;
@@ -16,20 +13,25 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@Builder
 @AllArgsConstructor
 public class Film {
 
     @Setter
-    private long id;
+    private Long id;
     @NotBlank
     private String name;
     @Size(max = 200)
     private String description;
     @NonNull
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE )
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @FilmDateApprove
     private LocalDate releaseDate;
     @Positive
-    private int duration;
-    private final Set<Long> likes = new HashSet<>();
+    private Long duration;
+    private Set<Long> likes = new HashSet<>();
+    private Mpa mpa;
+    @Getter
+    @Setter
+    private Set<Genre> genres;
 }
